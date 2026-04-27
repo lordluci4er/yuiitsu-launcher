@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widgets/search_bar.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -33,6 +34,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _openSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const SettingsScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final String time = DateFormat('hh:mm').format(now);
@@ -50,6 +60,19 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              /// Top Right Settings
+              Align(
+                alignment: Alignment.topRight,
+                child: IconButton(
+                  onPressed: _openSettings,
+                  icon: const Icon(
+                    Icons.settings_rounded,
+                    color: Colors.white70,
+                    size: 26,
+                  ),
+                ),
+              ),
+
               const Spacer(),
 
               /// TIME
@@ -112,13 +135,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: Colors.white.withValues(alpha: 0.08),
                   ),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    DockIcon(Icons.phone),
-                    DockIcon(Icons.message),
-                    DockIcon(Icons.camera_alt),
-                    DockIcon(Icons.settings),
+                    const DockIcon(Icons.phone),
+                    const DockIcon(Icons.message),
+                    const DockIcon(Icons.camera_alt),
+                    GestureDetector(
+                      onTap: _openSettings,
+                      child: const DockIcon(Icons.settings),
+                    ),
                   ],
                 ),
               ),
