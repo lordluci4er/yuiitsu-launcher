@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../widgets/search_bar.dart';
 import 'settings_screen.dart';
+import 'app_drawer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -43,112 +44,150 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _openDrawer() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const AppDrawerScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final String time = DateFormat('hh:mm').format(now);
     final String amPm = DateFormat('a').format(now);
     final String date = DateFormat('EEEE, dd MMMM').format(now);
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 22,
-            vertical: 18,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              /// Top Right Settings
-              Align(
-                alignment: Alignment.topRight,
-                child: IconButton(
-                  onPressed: _openSettings,
-                  icon: const Icon(
-                    Icons.settings_rounded,
-                    color: Colors.white70,
-                    size: 26,
-                  ),
-                ),
-              ),
-
-              const Spacer(),
-
-              /// TIME
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    time,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 64,
-                      fontWeight: FontWeight.w300,
-                      letterSpacing: 1.5,
+    return GestureDetector(
+      onVerticalDragEnd: (details) {
+        if (details.primaryVelocity != null &&
+            details.primaryVelocity! < -150) {
+          _openDrawer();
+        }
+      },
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 22,
+              vertical: 18,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                /// Top Right Settings
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                    onPressed: _openSettings,
+                    icon: const Icon(
+                      Icons.settings_rounded,
+                      color: Colors.white70,
+                      size: 26,
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(
-                      amPm,
+                ),
+
+                const Spacer(),
+
+                /// TIME
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      time,
                       style: const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                        fontSize: 64,
+                        fontWeight: FontWeight.w300,
+                        letterSpacing: 1.5,
                       ),
                     ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 6),
-
-              /// DATE
-              Text(
-                date,
-                style: const TextStyle(
-                  color: Colors.white54,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-
-              const SizedBox(height: 28),
-
-              /// SEARCH BAR
-              const SearchBarWidget(),
-
-              const Spacer(),
-
-              /// DOCK
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 14,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(24),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.08),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const DockIcon(Icons.phone),
-                    const DockIcon(Icons.message),
-                    const DockIcon(Icons.camera_alt),
-                    GestureDetector(
-                      onTap: _openSettings,
-                      child: const DockIcon(Icons.settings),
+                    const SizedBox(width: 8),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        amPm,
+                        style: const TextStyle(
+                          color: Colors.white70,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ],
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 6),
+
+                /// DATE
+                Text(
+                  date,
+                  style: const TextStyle(
+                    color: Colors.white54,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+
+                const SizedBox(height: 28),
+
+                /// SEARCH BAR
+                GestureDetector(
+                  onTap: _openDrawer,
+                  child: const AbsorbPointer(
+                    child: SearchBarWidget(),
+                  ),
+                ),
+
+                const Spacer(),
+
+                /// Swipe Hint
+                const Center(
+                  child: Text(
+                    'Swipe up for apps',
+                    style: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 13,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 14),
+
+                /// DOCK
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const DockIcon(Icons.phone),
+                      const DockIcon(Icons.message),
+                      GestureDetector(
+                        onTap: _openDrawer,
+                        child: const DockIcon(Icons.apps_rounded),
+                      ),
+                      GestureDetector(
+                        onTap: _openSettings,
+                        child: const DockIcon(Icons.settings),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
